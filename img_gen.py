@@ -3,7 +3,6 @@ from PIL import Image
 from io import BytesIO
 import requests
 from getdata import getdata
-from get_img_url import get_urls
 
 def get_images(urls):
   r = [requests.get(url) for url in urls]
