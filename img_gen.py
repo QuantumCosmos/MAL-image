@@ -4,6 +4,12 @@ from io import BytesIO
 import requests
 from getdata import getdata
 
+def get_users():
+  with open("users.txt", 'r') as file:
+    users = file.readlines()
+    users = [users.rstrip() for line in users]
+  return users
+
 def get_images(urls):
   r = [requests.get(url) for url in urls]
   print(len(r), "Images loaded")
@@ -29,14 +35,14 @@ def build_collage(images, total_width):
     x_offset += im.size[0]
   return new_im
 
-inp = input().split(' ')
-username = inp[0]
-urls = getdata(username)
+users = get_users()
+for username in users:
+  urls = getdata(username)
 
-new_im, total_width = create_canvas(len(urls))
-images = get_images(urls)
-new_image = build_collage(images, total_width)
-print("Collage building compleat")
+  new_im, total_width = create_canvas(len(urls))
+  images = get_images(urls)
+  new_image = build_collage(images, total_width)
+  print("Collage building compleat")
 
-new_im.save(username + ".png")
-print("Image Saved")
+  new_im.save(username + ".png")
+  print("Image Saved")
