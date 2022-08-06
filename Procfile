@@ -1,1 +1,1 @@
-web: python img_gen.py
+worker: python img_gen.py
