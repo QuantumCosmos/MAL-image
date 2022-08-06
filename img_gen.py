@@ -7,7 +7,6 @@ from decouple import config
 import requests
 import os
 from getdata import getdata
-from imagebase import upload
 
 def init():
     config_info = {
