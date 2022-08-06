@@ -37,16 +37,16 @@ def get_users():
     users = [line.rstrip() for line in users]
   return users
 
-def get_images(urls):
+def get_images(urls, height=600, width=400):
   r = [requests.get(url) for url in urls]
   print(len(r), "Images loaded")
-  images = [Image.open(BytesIO(x.content)).resize((400, 600)) for x in r]
+  images = [Image.open(BytesIO(x.content)).resize((width, height)) for x in r]
   widths, heights = zip(*(i.size for i in images))
   return images
 
-def create_canvas(url_len):
-  total_width = 400*min(5, url_len)
-  max_height = 600*ceil(url_len/5)
+def create_canvas(url_len, height=600, width=400):
+  total_width = width*min(5, url_len)
+  max_height = height*ceil(url_len/5)
 
   new_im = Image.new('RGBA', (total_width, max_height))
   return new_im, total_width
@@ -67,13 +67,24 @@ storage = init()
 while True:
   for username in users:
     print("User loaded:", username)
+    h = 600
+    w = 400
+    bind = ""
+    if username == "Chronon:min":
+          username = "Chronon"
+          print("User loaded:", username)
+          bind = "min"
+          h = 150
+          w = 100
     urls = getdata(username)
+    
+    new_im, total_width = create_canvas(len(urls), height=h, width=w)
+    images = get_images(urls, height=h, width=w)
 
-    new_im, total_width = create_canvas(len(urls))
-    images = get_images(urls)
+
     new_image = build_collage(images, total_width)
     print("Collage building compleat")
-    image_name = username + ".png"
+    image_name = username + bind + ".png"
     new_im.save(image_name)
     print("Image Saved")
     upload(image_name, storage)
