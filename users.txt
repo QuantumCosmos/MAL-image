@@ -1,3 +1,4 @@
 Chronon
 Chronon:min
 -chlorine
+-chlorine:min

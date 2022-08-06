@@ -39,6 +39,8 @@ def get_users():
 
 def get_images(urls, height=600, width=400):
   r = [requests.get(url) for url in urls]
+  if h == 150:
+    r = r[:10]
   print(len(r), "Images loaded")
   images = [Image.open(BytesIO(x.content)).resize((width, height)) for x in r]
   widths, heights = zip(*(i.size for i in images))
@@ -70,10 +72,10 @@ while True:
     h = 600
     w = 400
     bind = ""
-    if username == "Chronon:min":
-          username = "Chronon"
+    if ":" in username:
+          username = username.split(":")[0]
           print("User loaded:", username)
-          bind = "min"
+          bind = ":min"
           h = 150
           w = 100
     urls = getdata(username)
