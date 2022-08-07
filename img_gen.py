@@ -29,7 +29,7 @@ def upload(image, storage):
     path_on_cloud = "images/" + image
     path_local = image
     storage.child(path_on_cloud).put(path_local)
-    print("Successful upload")
+    print("\"{}\": Image Successfully Uploaded".format(username))
 
 def get_users():
   with open("users.txt", 'r') as file:
@@ -40,8 +40,8 @@ def get_users():
 def get_images(urls, height=600, width=400):
   r = [requests.get(url) for url in urls]
   if h == 150:
-    r = r[:10]
-  print(len(r), "Images loaded")
+    r = r[:5]
+  print("\"{}\": {} Images loaded".format(username, len(r)))
   images = [Image.open(BytesIO(x.content)).resize((width, height)) for x in r]
   widths, heights = zip(*(i.size for i in images))
   return images
@@ -79,18 +79,20 @@ while True:
           h = 150
           w = 100
     urls = getdata(username)
-    
+    if urls == []:
+      print("\"{}\": Upload Ignored".format(username))
+      continue
     new_im, total_width = create_canvas(len(urls), height=h, width=w)
     images = get_images(urls, height=h, width=w)
 
 
     new_image = build_collage(images, total_width)
-    print("Collage building compleat")
+    print("\"{}\": Collage building complete".format(username))
     image_name = username + bind + ".png"
     new_im.save(image_name)
-    print("Image Saved")
+    print("\"{}\": Image Saved".format(username))
     upload(image_name, storage)
     os.remove(image_name)
-    print("Image deleted from local storage")
+    print("\"{}\": Image deleted from local storage".format(username))
     sleep(30)
   sleep(300)
