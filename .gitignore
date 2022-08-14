@@ -1,6 +1,7 @@
 *
 !.gitignore
 !getdata.py
+!get_last_comp.py
 !img_gen.py
 !requirements.txt
 !users.txt

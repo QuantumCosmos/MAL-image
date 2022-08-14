@@ -28,5 +28,5 @@ def getdata(username):
             return []
         else:
             return writejson(data, username)
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
         return writejson(data, username)

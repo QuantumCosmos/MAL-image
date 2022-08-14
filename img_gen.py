@@ -1,4 +1,3 @@
-from math import ceil
 from time import sleep
 from PIL import Image
 from io import BytesIO
@@ -6,6 +5,7 @@ import pyrebase
 from decouple import config
 import requests
 import os
+from get_last_comp import getdata_comp
 from getdata import getdata
 
 def init():
@@ -39,17 +39,13 @@ def get_users():
 
 def get_images(urls, height=600, width=400):
   r = [requests.get(url) for url in urls]
-  if h == 150:
-    r = r[:5]
   print("\"{}\": {} Images loaded".format(username, len(r)))
   images = [Image.open(BytesIO(x.content)).resize((width, height)) for x in r]
-  widths, heights = zip(*(i.size for i in images))
   return images
 
-def create_canvas(url_len, height=600, width=400):
-  total_width = width*min(5, url_len)
-  max_height = height*ceil(url_len/5)
-
+def create_canvas(height=600, width=400):
+  total_width = width*2
+  max_height = height*5
   new_im = Image.new('RGBA', (total_width, max_height))
   return new_im, total_width
 
@@ -62,28 +58,33 @@ def build_collage(images, total_width):
       y_offset += im.size[1]
     new_im.paste(im, (x_offset, y_offset))
     x_offset += im.size[0]
+
+  new_im.thumbnail((400, 1500))
   return new_im
 
 users = get_users()
 storage = init()
 while True:
   for username in users:
-    print("User loaded:", username)
-    h = 600
-    w = 400
-    bind = ""
-    if ":" in username:
-          username = username.split(":")[0]
-          print("User loaded:", username)
-          bind = ":min"
-          h = 150
-          w = 100
-    urls = getdata(username)
+    print("Command:", username)
+    if ":w" in username:
+      username = username.split(":")[0]
+      urls = getdata(username)
+      bind = ":w"
+    elif ":c" in username:
+      username = username.split(":")[0]
+      urls = getdata_comp(username)
+      bind = ":c"
+    else:
+      url = []
+      print("\"{}\": Task not Specified or Unknown Task".format(username))
+      continue
+    
     if urls == []:
       print("\"{}\": Upload Ignored".format(username))
       continue
-    new_im, total_width = create_canvas(len(urls), height=h, width=w)
-    images = get_images(urls, height=h, width=w)
+    new_im, total_width = create_canvas()
+    images = get_images(urls)
 
 
     new_image = build_collage(images, total_width)

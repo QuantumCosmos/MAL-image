@@ -1,4 +1,2 @@
-Chronon
-Chronon:min
--chlorine
--chlorine:min
+Chronon:w
+Chronon:c
