@@ -1,5 +1,5 @@
 from time import sleep
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import pyrebase
 from decouple import config
@@ -45,13 +45,14 @@ def get_images(urls, height=600, width=400):
 
 def create_canvas(height=600, width=400):
   total_width = 800
-  max_height = 1800
+  max_height = 1800+150
   new_im = Image.new('RGBA', (total_width, max_height))
   return new_im, total_width
 
 
 def build_collage(images, total_width):
-  x_offset = y_offset = 0
+  x_offset = 0
+  y_offset = 150
   for im in images:
     if x_offset == total_width:
       x_offset = 0
@@ -59,7 +60,7 @@ def build_collage(images, total_width):
     new_im.paste(im, (x_offset, y_offset))
     x_offset += im.size[0]
 
-  new_im.thumbnail((390, 877.5))
+  new_im.thumbnail((390, 950.625))
   return new_im
 
 users = get_users()
@@ -71,10 +72,14 @@ while True:
     if ":w" in username:
       username = username.split(":")[0]
       urls = getdata(username, IGNORE)
+      text = "Currently Watching"
+      fill_color = (45, 176, 58)
       bind = ":w"
     elif ":c" in username:
       username = username.split(":")[0]
       urls = getdata_comp(username, IGNORE)
+      text = "Last Completed"
+      fill_color = (39, 68, 144)
       bind = ":c"
     else:
       url = []
@@ -93,11 +98,20 @@ while True:
     new_image = build_collage(images, total_width)
     print("\"{}\": Collage building complete".format(username))
     image_name = username + bind + ".png"
+    d1 = ImageDraw.Draw(new_image)
+    myFont = ImageFont.truetype('Lato-Bold.ttf', 40)
+    w, h = d1.textsize(text, myFont)
+    print((390-w)/2)
+    d1.text(((390-w)/2, 0), text, font=myFont, fill =fill_color)
+    # new_image.show()
+    # img.save("images/image_text.jpg")
     new_im.save(image_name)
     print("\"{}\": Image Saved".format(username))
     upload(image_name, storage)
     os.remove(image_name)
     print("\"{}\": Image deleted from local storage".format(username))
+    # break
     sleep(30*IGNORE)
+  # break
   IGNORE = True
   sleep(300)
