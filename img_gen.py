@@ -59,7 +59,7 @@ def build_collage(images, total_width):
     new_im.paste(im, (x_offset, y_offset))
     x_offset += im.size[0]
 
-  # new_im.thumbnail((400, 900))
+  new_im.thumbnail((385, 866.25))
   return new_im
 
 users = get_users()
@@ -98,6 +98,6 @@ while True:
     upload(image_name, storage)
     os.remove(image_name)
     print("\"{}\": Image deleted from local storage".format(username))
-    sleep(30)
+    sleep(30*IGNORE)
   IGNORE = True
   sleep(300)
