@@ -1,6 +1,4 @@
 import json
-from tkinter import TRUE
-from tkinter.messagebox import IGNORE
 import requests
 from decouple import config
 API_KEY = config('MAL_API_KEY')
