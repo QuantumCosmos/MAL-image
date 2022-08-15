@@ -59,7 +59,7 @@ def build_collage(images, total_width):
     new_im.paste(im, (x_offset, y_offset))
     x_offset += im.size[0]
 
-  new_im.thumbnail((400, 900))
+  new_im.thumbnail((390, 877.5))
   return new_im
 
 users = get_users()
