@@ -15,7 +15,7 @@ def comp_list(username):
     image_url_dict = {}
     for node in data_comp["data"]:
         image_url_dict[node["node"]["title"]
-                       ] = node["node"]["main_picture"]["large"]
+                       ] = node["node"]["main_picture"]["medium"]
     return image_url_dict
 
 def writejson(data, username):
@@ -47,7 +47,7 @@ def get_final_image_urls(titles=[], file_data=[], image_url_dict={}):
 
 
 
-def getdata_comp(username):
+def getdata_comp(username, IGNORE=True):
     response = requests.get(
         url="https://myanimelist.net/rss.php?type=rw&u=" + username)
 
@@ -68,7 +68,7 @@ def getdata_comp(username):
     print("\"{}\": Head: {}".format(username, head))
     print("\"{}\": New Head: {}".format(username, new_head))
 
-    if head == new_head:
+    if (head == new_head) and IGNORE:
         print("\"{}\": no change".format(username))
         return []
     else:

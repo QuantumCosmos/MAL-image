@@ -1,4 +1,6 @@
 import json
+from tkinter import TRUE
+from tkinter.messagebox import IGNORE
 import requests
 from decouple import config
 API_KEY = config('MAL_API_KEY')
@@ -9,11 +11,11 @@ def writejson(data, username):
     json.dump(data, file, indent=4)
     print("\"{}\": Data Saved".format(username))
     for node in data["data"]:
-        image_urls.append(node["node"]["main_picture"]["large"])
+        image_urls.append(node["node"]["main_picture"]["medium"])
     return image_urls
 
 
-def getdata(username):
+def getdata(username, IGNORE=True):
     headers = {
         'Authorization': 'Bearer ' + API_KEY,
     }
@@ -22,8 +24,7 @@ def getdata(username):
     data = response.json()
     
     try:
-
-        if data == json.load(open(username + ".json", 'r')):
+        if (data == json.load(open(username + ".json", 'r'))) and IGNORE:
             print("\"{}\": No Changes made".format(username))
             return []
         else:
