@@ -15,7 +15,7 @@ def comp_list(username):
     image_url_dict = {}
     for node in data_comp["data"]:
         image_url_dict[node["node"]["title"]
-                       ] = node["node"]["main_picture"]["medium"]
+                       ] = node["node"]["main_picture"]["large"]
     return image_url_dict
 
 def writejson(data, username):

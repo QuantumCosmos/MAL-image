@@ -9,7 +9,7 @@ def writejson(data, username):
     json.dump(data, file, indent=4)
     print("\"{}\": Data Saved".format(username))
     for node in data["data"]:
-        image_urls.append(node["node"]["main_picture"]["medium"])
+        image_urls.append(node["node"]["main_picture"]["large"])
     return image_urls
 
 

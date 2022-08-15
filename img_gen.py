@@ -37,15 +37,15 @@ def get_users():
     users = [line.rstrip() for line in users]
   return users
 
-def get_images(urls, height=150, width=100):
+def get_images(urls, height=600, width=400):
   r = [requests.get(url) for url in urls]
   print("\"{}\": {} Images loaded".format(username, len(r)))
   images = [Image.open(BytesIO(x.content)).resize((width, height)) for x in r]
   return images
 
 def create_canvas(height=600, width=400):
-  total_width = 200
-  max_height = 450
+  total_width = 800
+  max_height = 1800
   new_im = Image.new('RGBA', (total_width, max_height))
   return new_im, total_width
 
@@ -59,6 +59,7 @@ def build_collage(images, total_width):
     new_im.paste(im, (x_offset, y_offset))
     x_offset += im.size[0]
 
+  new_im.thumbnail((400, 900))
   return new_im
 
 users = get_users()
@@ -92,7 +93,6 @@ while True:
     new_image = build_collage(images, total_width)
     print("\"{}\": Collage building complete".format(username))
     image_name = username + bind + ".png"
-    print(image_name)
     new_im.save(image_name)
     print("\"{}\": Image Saved".format(username))
     upload(image_name, storage)
