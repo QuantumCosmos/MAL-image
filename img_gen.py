@@ -1,6 +1,5 @@
 from datetime import datetime
 from time import sleep
-from tkinter.messagebox import YES
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import pyrebase
