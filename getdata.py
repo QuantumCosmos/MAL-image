@@ -6,11 +6,13 @@ API_KEY = config('MAL_API_KEY')
 def writejson(data, username):
     file = open(username + ".json", 'w')
     image_urls = []
+    image_titles = []
     json.dump(data, file, indent=4)
     print("\"{}\": Data Saved".format(username))
     for node in data["data"]:
         image_urls.append(node["node"]["main_picture"]["large"])
-    return image_urls
+        image_titles.append(node["node"]["id"])
+    return image_urls, image_titles
 
 
 def getdata(username, IGNORE=True):

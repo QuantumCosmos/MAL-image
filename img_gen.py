@@ -1,4 +1,6 @@
+from datetime import datetime
 from time import sleep
+from tkinter.messagebox import YES
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import pyrebase
@@ -7,6 +9,7 @@ import requests
 import os
 from get_last_comp import getdata_comp
 from getdata import getdata
+from seasonal import seasonals
 
 def init():
     config_info = {
@@ -21,7 +24,8 @@ def init():
         }
     firebase = pyrebase.initialize_app(config_info)
     storage = firebase.storage()
-    return storage
+    seasonal = Image.open(r"seasonal.png").resize((200, 200))
+    return storage, seasonal
 
 
 def upload(image, storage):
@@ -37,72 +41,89 @@ def get_users():
     users = [line.rstrip() for line in users]
   return users
 
-def get_images(urls, height=600, width=400):
+def get_images(urls, height=600, width=400, ids=[]):
   r = [requests.get(url) for url in urls]
   print("\"{}\": {} Images loaded".format(username, len(r)))
   images = [Image.open(BytesIO(x.content)).resize((width, height)) for x in r]
   return images
 
 def create_canvas(height=600, width=400):
-  total_width = 800
-  max_height = 1800+150
+  total_width = 400*3 +100
+  max_height = 600*2
   new_im = Image.new('RGBA', (total_width, max_height))
   return new_im, total_width
 
 
-def build_collage(images, total_width):
+def build_collage(images, total_width, s_en=False, ids=[], seasonals_id_list=[]):
   x_offset = 0
   y_offset = 150
-  for im in images:
-    if x_offset == total_width:
-      x_offset = 0
-      y_offset += im.size[1]
+  for i in range(len(images)):
+    im = images[i]
+    if x_offset == total_width+50:
+      x_offset = 200
+      y_offset += im.size[1]-150
+    if s_en:
+      if ids[i] in seasonals_id_list:
+        im.paste(seasonal, (1, -5), seasonal)
     new_im.paste(im, (x_offset, y_offset))
-    x_offset += im.size[0]
+    x_offset += im.size[0]+50
 
-  new_im.thumbnail((390, 950.625))
+  new_im.thumbnail((320, 350))
   return new_im
 
 users = get_users()
-storage = init()
+storage, seasonal = init()
 IGNORE = False
+titles = []
+pre_year = 0
+seasons = {0: "winter",
+          1: "spring",
+          2: "summer",
+          3: "fall"
+          }
 while True:
+  year = str(datetime.now().year)
+  season = seasons[datetime.now().month//4]
+  if not year == pre_year:
+    seasonals_id_list = seasonals(year, season)
   for username in users:
     print("Command:", username)
     if ":w" in username:
       username = username.split(":")[0]
-      urls = getdata(username, IGNORE)
+      urls, titles = getdata(username, IGNORE)
       text = "Currently Watching"
       fill_color = (45, 176, 58)
-      bind = ":w"
+      bind = "__w"
+      s_en = True
     elif ":c" in username:
       username = username.split(":")[0]
       urls = getdata_comp(username, IGNORE)
       text = "Last Completed"
       fill_color = (39, 68, 144)
-      bind = ":c"
+      bind = "__c"
+      s_en = False
     else:
       url = []
       print("\"{}\": Task not Specified or Unknown Task".format(username))
       continue
 
-    urls = urls[:6]
+    urls = urls[:5]
     
     if urls == []:
       print("\"{}\": Upload Ignored".format(username))
       continue
     new_im, total_width = create_canvas()
     images = get_images(urls)
+    # break
 
 
-    new_image = build_collage(images, total_width)
+    new_image = build_collage(images, total_width, s_en, titles, seasonals_id_list)
     print("\"{}\": Collage building complete".format(username))
     image_name = username + bind + ".png"
     d1 = ImageDraw.Draw(new_image)
-    myFont = ImageFont.truetype('Lato-Bold.ttf', 40)
+    myFont = ImageFont.truetype('Lato-Bold.ttf', 30)
     w, h = d1.textsize(text, myFont)
-    print((390-w)/2)
-    d1.text(((390-w)/2, 0), text, font=myFont, fill =fill_color)
+    d1.text(((320-w)/2, 0), text, font=myFont, fill=fill_color)
     # new_image.show()
     # img.save("images/image_text.jpg")
     new_im.save(image_name)
@@ -110,8 +131,7 @@ while True:
     upload(image_name, storage)
     os.remove(image_name)
     print("\"{}\": Image deleted from local storage".format(username))
-    # break
     sleep(30*IGNORE)
-  # break
   IGNORE = True
+  pre_year = year
   sleep(300)
