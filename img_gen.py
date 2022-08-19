@@ -92,14 +92,14 @@ while True:
       urls, titles = getdata(username, IGNORE)
       text = "Currently Watching"
       fill_color = (45, 176, 58)
-      bind = "__w"
+      bind = ":w"
       s_en = True
     elif ":c" in username:
       username = username.split(":")[0]
       urls = getdata_comp(username, IGNORE)
       text = "Last Completed"
       fill_color = (39, 68, 144)
-      bind = "__c"
+      bind = ":c"
       s_en = False
     else:
       url = []
