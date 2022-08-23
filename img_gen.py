@@ -1,4 +1,5 @@
 from datetime import datetime
+from pickle import FALSE
 from time import sleep
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -74,7 +75,7 @@ users = get_users()
 storage, seasonal = init()
 IGNORE = False
 titles = []
-pre_year = 0
+pre_season = None
 seasons = {0: "winter",
           1: "spring",
           2: "summer",
@@ -83,8 +84,9 @@ seasons = {0: "winter",
 while True:
   year = str(datetime.now().year)
   season = seasons[datetime.now().month//4]
-  if not year == pre_year:
+  if not season == pre_season:
     seasonals_id_list = seasonals(year, season)
+    IGNORE = FALSE
   for username in users:
     print("Command:", username)
     if ":w" in username:
@@ -130,7 +132,9 @@ while True:
     upload(image_name, storage)
     os.remove(image_name)
     print("\"{}\": Image deleted from local storage".format(username))
+  #   break
+  # break
     sleep(30*IGNORE)
   IGNORE = True
-  pre_year = year
+  pre_season = season
   sleep(300)
