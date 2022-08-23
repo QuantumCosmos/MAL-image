@@ -62,8 +62,9 @@ def build_collage(images, total_width, ids=[], seasonals_id_list=[]):
     if x_offset == total_width+50:
       x_offset = 200
       y_offset += im.size[1]-150
-      if ids[i] in seasonals_id_list:
-        im.paste(seasonal, (1, -5), seasonal)
+    
+    if ids[i] in seasonals_id_list:
+      im.paste(seasonal, (1, -5), seasonal)
     new_im.paste(im, (x_offset, y_offset))
     x_offset += im.size[0]+50
 
@@ -112,8 +113,6 @@ while True:
       continue
     new_im, total_width = create_canvas()
     images = get_images(urls)
-    # break
-
 
     new_image = build_collage(images, total_width, titles, seasonals_id_list)
     print("\"{}\": Collage building complete".format(username))
@@ -122,8 +121,6 @@ while True:
     myFont = ImageFont.truetype('Lato-Bold.ttf', 30)
     w, h = d1.textsize(text, myFont)
     d1.text(((320-w)/2, 0), text, font=myFont, fill=fill_color)
-    # new_image.show()
-    # img.save("images/image_text.jpg")
     new_im.save(image_name)
     print("\"{}\": Image Saved".format(username))
     upload(image_name, storage)

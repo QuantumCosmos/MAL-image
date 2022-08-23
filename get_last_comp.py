@@ -40,6 +40,7 @@ def get_final_image_urls(titles=[], file_data=[], image_url_dict={}):
     titles_final = copy(titles)
     titles_final.extend(t for t in file_data if t not in titles)
     titles_final = titles_final[:10]
+    titles_final.pop()
     image_urls = []
     for t in titles_final:
         image_urls.append(image_url_dict[t])
@@ -84,4 +85,4 @@ def getdata_comp(username, IGNORE=True):
 
 
 if __name__ == "__main__":
-    getdata_comp("Chronon")
+    getdata_comp("Chronon", False)
