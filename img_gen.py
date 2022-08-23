@@ -86,7 +86,7 @@ while True:
   season = seasons[datetime.now().month//4]
   if not season == pre_season:
     seasonals_id_list = seasonals(year, season)
-    IGNORE = FALSE
+    IGNORE = False
   for username in users:
     print("Command:", username)
     if ":w" in username:
