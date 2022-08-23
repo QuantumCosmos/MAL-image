@@ -54,7 +54,7 @@ def create_canvas(height=600, width=400):
   return new_im, total_width
 
 
-def build_collage(images, total_width, s_en=True, ids=[], seasonals_id_list=[]):
+def build_collage(images, total_width, ids=[], seasonals_id_list=[]):
   x_offset = 0
   y_offset = 150
   for i in range(len(images)):
@@ -62,7 +62,6 @@ def build_collage(images, total_width, s_en=True, ids=[], seasonals_id_list=[]):
     if x_offset == total_width+50:
       x_offset = 200
       y_offset += im.size[1]-150
-    if s_en:
       if ids[i] in seasonals_id_list:
         im.paste(seasonal, (1, -5), seasonal)
     new_im.paste(im, (x_offset, y_offset))
@@ -95,14 +94,12 @@ while True:
       text = "Currently Watching"
       fill_color = (45, 176, 58)
       bind = ":w"
-      s_en = True
     elif ":c" in username:
       username = username.split(":")[0]
       urls, titles = getdata_comp(username, IGNORE)
       text = "Last Completed"
       fill_color = (39, 68, 144)
       bind = ":c"
-      s_en = True
     else:
       url = []
       print("\"{}\": Task not Specified or Unknown Task".format(username))
@@ -118,7 +115,7 @@ while True:
     # break
 
 
-    new_image = build_collage(images, total_width, s_en, titles, seasonals_id_list)
+    new_image = build_collage(images, total_width, titles, seasonals_id_list)
     print("\"{}\": Collage building complete".format(username))
     image_name = username + bind + ".png"
     d1 = ImageDraw.Draw(new_image)
