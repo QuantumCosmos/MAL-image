@@ -54,7 +54,7 @@ def create_canvas(height=600, width=400):
   return new_im, total_width
 
 
-def build_collage(images, total_width, s_en=False, ids=[], seasonals_id_list=[]):
+def build_collage(images, total_width, s_en=True, ids=[], seasonals_id_list=[]):
   x_offset = 0
   y_offset = 150
   for i in range(len(images)):
@@ -102,7 +102,7 @@ while True:
       text = "Last Completed"
       fill_color = (39, 68, 144)
       bind = ":c"
-      s_en = False
+      s_en = True
     else:
       url = []
       print("\"{}\": Task not Specified or Unknown Task".format(username))
