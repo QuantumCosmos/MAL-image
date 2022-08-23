@@ -12,11 +12,13 @@ def comp_list(username):
     response_comp = requests.get(url="https://api.myanimelist.net/v2/users/" + username +
                                  "/animelist?offset=0&limit=50&status=completed&sort=list_updated_at&nsfw=1", headers=headers)
     data_comp = response_comp.json()
+    image_ids = []
     image_url_dict = {}
     for node in data_comp["data"]:
         image_url_dict[node["node"]["title"]
                        ] = node["node"]["main_picture"]["large"]
-    return image_url_dict
+        image_ids.append(node["node"]["id"])
+    return image_url_dict, image_ids
 
 def writejson(data, username):
     file = open(username + "com" + ".json", 'w')
@@ -72,11 +74,11 @@ def getdata_comp(username, IGNORE=True):
         print("\"{}\": no change".format(username))
         return []
     else:
-        image_url_dict = comp_list(username)
+        image_url_dict, image_ids = comp_list(username)
         print("\"{}\": Completed-List aquired".format(username))
         titles = last_comp_list(data, username)
         print("\"{}\": File updated".format(username))
-        return get_final_image_urls(titles, file_data, image_url_dict)
+        return get_final_image_urls(titles, file_data, image_url_dict), image_ids
 
 
 
