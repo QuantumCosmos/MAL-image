@@ -1,7 +1,7 @@
 import json
 import requests
 from decouple import config
-API_KEY = config('MAL_API_KEY')
+API_KEY = config('mal_api')
 
 def seasonals(year, season):
     headers = {

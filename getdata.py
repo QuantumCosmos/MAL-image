@@ -1,7 +1,7 @@
 import json
 import requests
 from decouple import config
-API_KEY = config('MAL_API_KEY')
+API_KEY = config("mal_api")
 
 def writejson(data, username):
     file = open(username + ".json", 'w')
@@ -17,10 +17,10 @@ def writejson(data, username):
 
 def getdata(username, IGNORE=True):
     headers = {
-        'Authorization': 'Bearer ' + API_KEY,
+        'Authorization': f'Bearer {API_KEY}'
     }
     response = requests.get(
-        url="https://api.myanimelist.net/v2/users/" + username + "/animelist?offset=0&limit=25&status=watching&sort=list_updated_at&nsfw=1", headers=headers)
+        url=f"https://api.myanimelist.net/v2/users/{username}/animelist?offset=0&limit=25&status=watching&sort=list_updated_at&nsfw=1", headers=headers)
     data = response.json()
     
     try:

@@ -1,5 +1,4 @@
 from datetime import datetime
-from pickle import FALSE
 from time import sleep
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -83,7 +82,7 @@ seasons = {0: "winter",
           }
 while True:
   year = str(datetime.now().year)
-  season = seasons[datetime.now().month//4]
+  season = seasons[(datetime.now().month-1)//3]
   if not season == pre_season:
     seasonals_id_list = seasonals(year, season)
     IGNORE = False
@@ -107,6 +106,7 @@ while True:
       continue
 
     urls = urls[:5]
+    titles = titles[:5]
     
     if urls == []:
       print("\"{}\": Upload Ignored".format(username))

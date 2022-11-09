@@ -3,7 +3,7 @@ import json
 import re
 import requests
 from decouple import config
-API_KEY = config('MAL_API_KEY')
+API_KEY = config('mal_api')
 
 def comp_list(username):
     headers = {
@@ -12,6 +12,7 @@ def comp_list(username):
     response_comp = requests.get(url="https://api.myanimelist.net/v2/users/" + username +
                                  "/animelist?offset=0&limit=50&status=completed&sort=list_updated_at&nsfw=1", headers=headers)
     data_comp = response_comp.json()
+    writejson(data_comp, username)
     image_ids = []
     image_url_dict = {}
     for node in data_comp["data"]:
