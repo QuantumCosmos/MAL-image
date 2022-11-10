@@ -88,44 +88,47 @@ while True:
     IGNORE = False
   for username in users:
     print("Command:", username)
-    if ":w" in username:
-      username = username.split(":")[0]
-      urls, titles = getdata(username, IGNORE)
-      text = "Currently Watching"
-      fill_color = (45, 176, 58)
-      bind = ":w"
-    elif ":c" in username:
-      username = username.split(":")[0]
-      urls, titles = getdata_comp(username, IGNORE)
-      text = "Last Completed"
-      fill_color = (39, 68, 144)
-      bind = ":c"
-    else:
-      url = []
-      print("\"{}\": Task not Specified or Unknown Task".format(username))
-      continue
+    try:
+      if ":w" in username:
+        username = username.split(":")[0]
+        urls, titles = getdata(username, IGNORE)
+        text = "Currently Watching"
+        fill_color = (45, 176, 58)
+        bind = ":w"
+      elif ":c" in username:
+        username = username.split(":")[0]
+        urls, titles = getdata_comp(username, IGNORE)
+        text = "Last Completed"
+        fill_color = (39, 68, 144)
+        bind = ":c"
+      else:
+        url = []
+        print("\"{}\": Task not Specified or Unknown Task".format(username))
+        continue
 
-    urls = urls[:5]
-    titles = titles[:5]
-    
-    if urls == []:
-      print("\"{}\": Upload Ignored".format(username))
-      continue
-    new_im, total_width = create_canvas()
-    images = get_images(urls)
+      urls = urls[:5]
+      titles = titles[:5]
+      
+      if urls == []:
+        print("\"{}\": Upload Ignored".format(username))
+        continue
+      new_im, total_width = create_canvas()
+      images = get_images(urls)
 
-    new_image = build_collage(images, total_width, titles, seasonals_id_list)
-    print("\"{}\": Collage building complete".format(username))
-    image_name = username + bind + ".png"
-    d1 = ImageDraw.Draw(new_image)
-    myFont = ImageFont.truetype('Lato-Bold.ttf', 30)
-    w, h = d1.textsize(text, myFont)
-    d1.text(((320-w)/2, 0), text, font=myFont, fill=fill_color)
-    new_im.save(image_name)
-    print("\"{}\": Image Saved".format(username))
-    upload(image_name, storage)
-    os.remove(image_name)
-    print("\"{}\": Image deleted from local storage".format(username))
+      new_image = build_collage(images, total_width, titles, seasonals_id_list)
+      print("\"{}\": Collage building complete".format(username))
+      image_name = username + bind + ".png"
+      d1 = ImageDraw.Draw(new_image)
+      myFont = ImageFont.truetype('Lato-Bold.ttf', 30)
+      w, h = d1.textsize(text, myFont)
+      d1.text(((320-w)/2, 0), text, font=myFont, fill=fill_color)
+      new_im.save(image_name)
+      print("\"{}\": Image Saved".format(username))
+      upload(image_name, storage)
+      os.remove(image_name)
+      print("\"{}\": Image deleted from local storage".format(username))
+    except ValueError:
+      pass
   #   break
   # break
     sleep(30*IGNORE)
