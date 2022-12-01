@@ -26,14 +26,16 @@ def writejson(data, username):
     json.dump(data, file, indent=4)
     print("\"{}\": Data Saved".format(username))
     
-def last_comp_list(data, username):
+def last_comp_list(data, username, file_data):
     titles = []
-    with open(username + ".txt", 'w') as file:
-        for d in data:
-            if 'Completed' in d:
-                s = (re.search("<title>(.*)</title>", d).group(1).split(' - ')[0])
-                file.write("%s\n"%s)
-                titles.append(s)
+    f =  open(username + ".txt", 'w', encoding='utf-16')
+    for d in data:
+        if 'Completed' in d:
+            s = (re.search("<title>(.*)</title>", d).group(1).split(' - ')[0])
+            titles.append(s)
+    titles += [i for i in file_data if i not in titles]
+    f.write('\n'.join(titles))
+    f.close()
     return titles
 
 
@@ -55,11 +57,11 @@ def getdata_comp(username, IGNORE=True):
     response = requests.get(
         url="https://myanimelist.net/rss.php?type=rw&u=" + username)
 
-    data = str(response.content)
+    data = str(response.text)
     file_data = []
     head = ""
     try:
-        f = open(username + ".txt", "r")
+        f = open(username + ".txt", "r", encoding='utf-16', errors='ignore')
         file_data = f.read().split('\n')
         head = file_data[0]
         f.close()
@@ -78,7 +80,7 @@ def getdata_comp(username, IGNORE=True):
     else:
         image_url_dict, image_ids = comp_list(username)
         print("\"{}\": Completed-List aquired".format(username))
-        titles = last_comp_list(data, username)
+        titles = last_comp_list(data, username, file_data)
         print("\"{}\": File updated".format(username))
         return get_final_image_urls(titles, file_data, image_url_dict), image_ids
 
